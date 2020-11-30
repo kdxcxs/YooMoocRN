@@ -35,11 +35,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#1c90ce',
     width: 100,
     height: 50,
-    borderRadius: 8,
+    borderRadius: 100,
   },
   buttonText: {
     fontWeight: 'bold',
-    color: '#4d4c4d',
+    color: 'mintcream',
     fontSize: 26,
   },
 });
