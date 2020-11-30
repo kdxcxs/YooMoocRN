@@ -45,18 +45,6 @@ const styles = StyleSheet.create({
   },
 });
 
-function LoginInput(props) {
-  return props.type === 'username' ? (
-    <TextInput style={styles.input} placeholder={'账号'} maxLength={10} />
-  ) : (
-    <TextInput
-      style={styles.input}
-      placeholder={'密码'}
-      secureTextEntry={true}
-    />
-  );
-}
-
 export default class YooLoginUI extends Component {
   constructor(props) {
     super(props);
@@ -77,8 +65,20 @@ export default class YooLoginUI extends Component {
     return (
       <View style={styles.container}>
         <Image source={require('../../assets/icon.png')} style={styles.logo} />
-        <LoginInput type={'username'} />
-        <LoginInput type={'password'} />
+        <TextInput
+          style={styles.input}
+          placeholder={'账号'}
+          maxLength={10}
+          value={this.props.username}
+          onChangeText={(username) => this.props.setUsername(username)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={'密码'}
+          secureTextEntry={true}
+          value={this.props.password}
+          onChangeText={(password) => this.props.setPassword(password)}
+        />
         <TouchableOpacity style={styles.button} onPress={this.onButtonPress}>
           {this.state.loading ? (
             <ActivityIndicator size="large" color="#00ff00" />
