@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Text,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -52,13 +53,19 @@ export default class YooLoginUI extends Component {
       loading: false,
     };
     this.onButtonPress = this.onButtonPress.bind(this);
+    this.onLoginFailed = this.onLoginFailed.bind(this);
   }
 
   onButtonPress() {
     if (!this.state.loading) {
       this.setState({loading: true});
-      this.props.loginCallback();
+      this.props.loginCallback(this.onLoginFailed);
     }
+  }
+
+  onLoginFailed() {
+    this.setState({loading: false});
+    ToastAndroid.show('登录失败', ToastAndroid.SHORT);
   }
 
   render() {
