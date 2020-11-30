@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Text,
+  ActivityIndicator,
 } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -57,14 +58,33 @@ function LoginInput(props) {
 }
 
 export default class YooLoginUI extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+    };
+    this.onButtonPress = this.onButtonPress.bind(this);
+  }
+
+  onButtonPress() {
+    if (!this.state.loading) {
+      this.setState({loading: true});
+      this.props.loginCallback();
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Image source={require('../../assets/icon.png')} style={styles.logo} />
         <LoginInput type={'username'} />
         <LoginInput type={'password'} />
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>登录</Text>
+        <TouchableOpacity style={styles.button} onPress={this.onButtonPress}>
+          {this.state.loading ? (
+            <ActivityIndicator size="large" color="#00ff00" />
+          ) : (
+            <Text style={styles.buttonText}>登录</Text>
+          )}
         </TouchableOpacity>
       </View>
     );
