@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {ToastAndroid} from 'react-native';
 import YooSplashUI from '../ui/YooSplashUI';
-import {post} from '../api/HTTP';
+import {gbkFetch} from '../api/HTTP';
 import CookieManager from '@react-native-community/cookies';
 
 export default class YooSplash extends Component {
   componentDidMount() {
-    post('http://eol.ctbu.edu.cn/meol/loginCheck.do', {
+    gbkFetch('POST', 'http://eol.ctbu.edu.cn/meol/loginCheck.do', {
       headers: {
         'Cache-Control': 'max-age=0',
         'Upgrade-Insecure-Requests': '1',

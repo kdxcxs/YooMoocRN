@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import YooLoginUI from '../ui/YooLoginUI';
 import CookieManager from '@react-native-community/cookies';
-import {post} from '../api/HTTP';
+import {gbkFetch} from '../api/HTTP';
 
 export default class YooLogin extends Component {
   constructor(props) {
@@ -24,7 +24,7 @@ export default class YooLogin extends Component {
   }
 
   login(onFail) {
-    post('http://eol.ctbu.edu.cn/meol/loginCheck.do', {
+    gbkFetch('POST', 'http://eol.ctbu.edu.cn/meol/loginCheck.do', {
       headers: {
         'Cache-Control': 'max-age=0',
         'Upgrade-Insecure-Requests': '1',
