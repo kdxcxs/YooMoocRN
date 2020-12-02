@@ -43,14 +43,16 @@ export default class YooLogin extends Component {
         this.state.username +
         '&IPT_LOGINPASSWORD=' +
         this.state.password,
-    }).then((response) => {
-      if (/<title>(.|\n)*用户登录(.|\n)*<\/title>/.test(response)) {
-        onFail();
-        CookieManager.clearAll();
-      } else if (/<title>(.|\n)*网络课程(.|\n)*<\/title>/.test(response)) {
-        // TODO:onSuccess();
-      }
-    });
+    })
+      .then((response) => {
+        if (/<title>(.|\n)*用户登录(.|\n)*<\/title>/.test(response)) {
+          onFail();
+          CookieManager.clearAll();
+        } else if (/<title>(.|\n)*网络课程(.|\n)*<\/title>/.test(response)) {
+          this.props.onSuccess();
+        }
+      })
+      .catch(onFail);
   }
 
   render() {

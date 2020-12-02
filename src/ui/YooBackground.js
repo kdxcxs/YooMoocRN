@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Image, StyleSheet, Animated} from 'react-native';
 
-export function YooBackground() {
+export default function YooBackground() {
   const imgPosition = useState(new Animated.ValueXY())[0];
   const styles = StyleSheet.create({
     backgroundContainer: {

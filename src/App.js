@@ -1,7 +1,8 @@
 import React from 'react';
 import {StyleSheet, View, Platform} from 'react-native';
 import {StatusBarHeight} from './api/StatusBarHeight';
-import {YooLogin, YooBackground} from './component/index';
+import {YooBackground} from './component/index';
+import Router from './Router';
 
 const styles = StyleSheet.create({
   container: {
@@ -15,7 +16,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <YooBackground />
-      <YooLogin />
+      <Router />
     </View>
   );
 }

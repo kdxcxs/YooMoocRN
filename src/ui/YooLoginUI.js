@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1c90ce',
     width: 100,
     height: 50,
-    borderRadius: 100,
+    borderRadius: 25,
   },
   buttonText: {
     fontWeight: 'bold',
