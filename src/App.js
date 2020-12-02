@@ -1,8 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Platform} from 'react-native';
 import {StatusBarHeight} from './api/StatusBarHeight';
-import YooLogin from './component/YooLogin';
-import {YooBackground} from './ui/YooBackground';
+import {YooLogin, YooBackground} from './component/index';
 
 const styles = StyleSheet.create({
   container: {
