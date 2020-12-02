@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Animated, Dimensions} from 'react-native';
-import {YooLogin, YooForum} from './component/index';
+import {YooLogin, YooForum, YooSplash} from './component/index';
 
 const width = Dimensions.get('window').width;
 
@@ -8,20 +8,24 @@ export default class Router extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentX: new Animated.Value(0),
-      nextX: new Animated.Value(width),
+      currentPage: 'splash',
+      splashX: new Animated.Value(0),
+      loginX: new Animated.Value(width),
+      forumX: new Animated.Value(width),
     };
     this.gotoForum = this.gotoForum.bind(this);
+    this.gotoLogin = this.gotoLogin.bind(this);
   }
 
-  gotoForum() {
+  gotoLogin() {
+    this.setState({currentPage: 'login'});
     Animated.parallel([
-      Animated.timing(this.state.currentX, {
+      Animated.timing(this.state.splashX, {
         toValue: -width,
         duration: 500,
         useNativeDriver: false,
       }),
-      Animated.timing(this.state.nextX, {
+      Animated.timing(this.state.loginX, {
         toValue: 0,
         duration: 500,
         useNativeDriver: false,
@@ -29,13 +33,46 @@ export default class Router extends Component {
     ]).start();
   }
 
+  gotoForum() {
+    if (this.state.currentPage === 'splash') {
+      Animated.parallel([
+        Animated.timing(this.state.splashX, {
+          toValue: -width,
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        Animated.timing(this.state.forumX, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    } else {
+      Animated.parallel([
+        Animated.timing(this.state.loginX, {
+          toValue: -width,
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        Animated.timing(this.state.forumX, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }
+  }
+
   render() {
     return (
       <View>
-        <Animated.View style={{left: this.state.currentX}}>
-          <YooLogin onSuccess={this.gotoForum} />
+        <Animated.View style={{left: this.state.splashX}}>
+          <YooSplash gotoLogin={this.gotoLogin} gotoForum={this.gotoForum} />
         </Animated.View>
-        <Animated.View style={{left: this.state.nextX}}>
+        <Animated.View style={{left: this.state.loginX}}>
+          <YooLogin gotoForum={this.gotoForum} />
+        </Animated.View>
+        <Animated.View style={{left: this.state.forumX}}>
           <YooForum />
         </Animated.View>
       </View>

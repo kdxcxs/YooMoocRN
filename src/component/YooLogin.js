@@ -49,7 +49,7 @@ export default class YooLogin extends Component {
           onFail();
           CookieManager.clearAll();
         } else if (/<title>(.|\n)*网络课程(.|\n)*<\/title>/.test(response)) {
-          this.props.onSuccess();
+          this.props.gotoForum();
         }
       })
       .catch(onFail);
