@@ -4,7 +4,7 @@ import {YooLogin, YooForum, YooSplash} from './component/index';
 
 const width = Dimensions.get('window').width;
 
-export default class Router extends Component {
+export default class YooRouter extends Component {
   constructor(props) {
     super(props);
     this.state = {
