@@ -17,6 +17,10 @@ export default class YooForum extends Component {
     this.initForum();
   }
 
+  componentDidMount() {
+    this.props.bindInitializer(this);
+  }
+
   initForum() {
     // get dwr session id
     gbkFetch(

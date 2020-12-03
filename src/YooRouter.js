@@ -15,6 +15,12 @@ export default class YooRouter extends Component {
     };
     this.gotoForum = this.gotoForum.bind(this);
     this.gotoLogin = this.gotoLogin.bind(this);
+    this.bindForumInitializer = this.bindForumInitializer.bind(this);
+    this.initForum = null;
+  }
+
+  bindForumInitializer(forumRef) {
+    this.initForum = forumRef.initForum;
   }
 
   gotoLogin() {
@@ -34,6 +40,7 @@ export default class YooRouter extends Component {
   }
 
   gotoForum() {
+    this.initForum();
     if (this.state.currentPage === 'splash') {
       Animated.parallel([
         Animated.timing(this.state.splashX, {
@@ -73,7 +80,7 @@ export default class YooRouter extends Component {
           <YooLogin gotoForum={this.gotoForum} />
         </Animated.View>
         <Animated.View style={{left: this.state.forumX}}>
-          <YooForum />
+          <YooForum bindInitializer={this.bindForumInitializer} />
         </Animated.View>
       </View>
     );
