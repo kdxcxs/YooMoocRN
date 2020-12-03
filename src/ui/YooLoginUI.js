@@ -63,9 +63,9 @@ export default class YooLoginUI extends Component {
     }
   }
 
-  onLoginFailed() {
+  onLoginFailed(hint) {
     this.setState({loading: false});
-    ToastAndroid.show('登录失败', ToastAndroid.SHORT);
+    ToastAndroid.show(hint, ToastAndroid.SHORT);
   }
 
   render() {

@@ -46,13 +46,13 @@ export default class YooLogin extends Component {
     })
       .then((response) => {
         if (/<title>(.|\n)*用户登录(.|\n)*<\/title>/.test(response)) {
-          onFail();
+          onFail('用户名或密码错误');
           CookieManager.clearAll();
         } else if (/<title>(.|\n)*网络课程(.|\n)*<\/title>/.test(response)) {
           this.props.gotoForum();
         }
       })
-      .catch(onFail);
+      .catch(() => onFail('登陆失败'));
   }
 
   render() {
