@@ -3,6 +3,7 @@ import {ToastAndroid} from 'react-native';
 import YooForumUI from '../ui/YooForumUI';
 import {gbkFetch} from '../api/HTTP';
 import CookieManager from '@react-native-community/cookies';
+import * as cheerio from 'cheerio';
 
 const ShowErrorToast = () =>
   ToastAndroid.show('获取数据时出错', ToastAndroid.SHORT);
@@ -10,11 +11,12 @@ const ShowErrorToast = () =>
 export default class YooForum extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      hint: '准备中',
+      topics: [],
+    };
     this.initForum = this.initForum.bind(this);
-  }
-
-  componentDidMount() {
-    this.initForum();
+    this.getTopicList = this.getTopicList.bind(this);
   }
 
   componentDidMount() {
@@ -49,9 +51,6 @@ export default class YooForum extends Component {
     )
       .then((response) => {
         if (/[^"]*"\);/.test(response)) {
-          this.setState({
-            textContent: response.match(/[^"]*"\);/)[0].split('"')[0],
-          });
           const exDate = new Date();
           exDate.setDate(exDate.getDate() + 1);
           CookieManager.set(
@@ -88,7 +87,9 @@ export default class YooForum extends Component {
                       'http://eol.ctbu.edu.cn/meol/jpk/course/layout/newpage/index.jsp?courseId=46445',
                   },
                 )
-                  .then()
+                  .then(() => {
+                    this.getTopicList();
+                  })
                   .catch(ShowErrorToast);
               })
               .catch(ShowErrorToast);
@@ -100,7 +101,38 @@ export default class YooForum extends Component {
       .catch(ShowErrorToast);
   }
 
+  getTopicList(page = 1) {
+    this.setState({hint: '获取数据中'});
+    gbkFetch(
+      'GET',
+      `http://eol.ctbu.edu.cn/meol/common/faq/forum.jsp?viewtype=thread&forumid=102211&cateId=0&s_gotopage=${page}`,
+      {
+        headers: {
+          'Upgrade-Insecure-Requests': '1',
+          'User-Agent': 'YooMooc',
+          Referer:
+            'http://eol.ctbu.edu.cn/meol/common/faq/forum.jsp?count=MODITIME&forumid=102211',
+        },
+      },
+    ).then((response) => {
+      const newTopics = [];
+      const appendNewTopic = (threadID, title, owner) => {
+        newTopics.push({threadID, title, owner});
+      };
+      const $ = cheerio.load(response, {ignoreWhitespace: true});
+      $('td.left').each(function () {
+        const current = $(this);
+        appendNewTopic(
+          current.children('a').attr('href').slice(20),
+          current.text(),
+          current.next().text(),
+        );
+      });
+      this.setState({topics: [...this.state.topics, ...newTopics], hint: ''});
+    });
+  }
+
   render() {
-    return <YooForumUI />;
+    return <YooForumUI topics={this.state.topics} hint={this.state.hint} />;
   }
 }
