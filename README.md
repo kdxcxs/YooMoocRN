@@ -2,7 +2,7 @@
 
 哟慕课 APP 是一个第三方的优慕课客户端
 
-![screenshot](./screenshot.jpg)
+<img src="./screenshot.jpg" alt="screenshot" style="height:500px;" />
 
 ## 🎞 背景
 
