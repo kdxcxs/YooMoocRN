@@ -8,6 +8,7 @@ import {
   Image,
   Animated,
   Dimensions,
+  Pressable,
 } from 'react-native';
 import YooForumTopic from '../component/YooForumTopic';
 import YooReply from './YooReply';
@@ -43,6 +44,10 @@ const styles = StyleSheet.create({
   indicator: {
     marginTop: 64,
   },
+  showMoreText: {
+    fontSize: 18,
+    margin: 8,
+  },
 });
 
 function ForumTopic(props) {
@@ -54,6 +59,20 @@ function ForumTopic(props) {
       hideDetail={props.hideDetail}
     />
   ));
+}
+
+function ShowMore(props) {
+  return (
+    <Pressable
+      style={{width: screenWidth, alignItems: 'center'}}
+      onPress={() => props.getTopicList()}>
+      {props.gettingTopicList ? (
+        <Text style={styles.showMoreText}>加载中</Text>
+      ) : (
+        <Text style={styles.showMoreText}>加载更多</Text>
+      )}
+    </Pressable>
+  );
 }
 
 export default class YooForumUI extends Component {
@@ -145,11 +164,17 @@ export default class YooForumUI extends Component {
           this.setState({currentPosition: event.nativeEvent.contentOffset.y})
         }>
         {this.props.hint === '' ? (
-          <ForumTopic
-            topics={this.props.topics}
-            showDetail={this.showDetail}
-            hideDetail={this.hideDetail}
-          />
+          <View>
+            <ForumTopic
+              topics={this.props.topics}
+              showDetail={this.showDetail}
+              hideDetail={this.hideDetail}
+            />
+            <ShowMore
+              getTopicList={this.props.getTopicList}
+              gettingTopicList={this.props.gettingTopicList}
+            />
+          </View>
         ) : (
           <View style={styles.hintContainer}>
             <Image
