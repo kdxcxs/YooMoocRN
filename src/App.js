@@ -1,14 +1,14 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Platform} from 'react-native';
 import {StatusBarHeight} from './api/StatusBarHeight';
-import YooLogin from './component/YooLogin';
-import {YooBackground} from './ui/YooBackground';
+import {YooBackground} from './component/index';
+import YooRouter from './YooRouter';
 
 const styles = StyleSheet.create({
   container: {
     margin: 0,
     padding: 0,
-    paddingTop: StatusBarHeight,
+    paddingTop: Platform.OS === 'ios' ? StatusBarHeight : 0,
   },
 });
 
@@ -16,7 +16,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <YooBackground />
-      <YooLogin />
+      <YooRouter />
     </View>
   );
 }

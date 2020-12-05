@@ -6,6 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   Text,
+  ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -35,36 +37,61 @@ const styles = StyleSheet.create({
     backgroundColor: '#1c90ce',
     width: 100,
     height: 50,
-    borderRadius: 8,
+    borderRadius: 25,
   },
   buttonText: {
     fontWeight: 'bold',
-    color: '#4d4c4d',
+    color: 'mintcream',
     fontSize: 26,
   },
 });
 
-function LoginInput(props) {
-  return props.type === 'username' ? (
-    <TextInput style={styles.input} placeholder={'账号'} maxLength={10} />
-  ) : (
-    <TextInput
-      style={styles.input}
-      placeholder={'密码'}
-      secureTextEntry={true}
-    />
-  );
-}
-
 export default class YooLoginUI extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+    };
+    this.onButtonPress = this.onButtonPress.bind(this);
+    this.onLoginFailed = this.onLoginFailed.bind(this);
+  }
+
+  onButtonPress() {
+    if (!this.state.loading) {
+      this.setState({loading: true});
+      this.props.loginCallback(this.onLoginFailed);
+    }
+  }
+
+  onLoginFailed(hint) {
+    this.setState({loading: false});
+    ToastAndroid.show(hint, ToastAndroid.SHORT);
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Image source={require('../../assets/icon.png')} style={styles.logo} />
-        <LoginInput type={'username'} />
-        <LoginInput type={'password'} />
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>登录</Text>
+        <TextInput
+          style={styles.input}
+          placeholder={'账号'}
+          maxLength={10}
+          value={this.props.username}
+          onChangeText={(username) => this.props.setUsername(username)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={'密码'}
+          secureTextEntry={true}
+          value={this.props.password}
+          onChangeText={(password) => this.props.setPassword(password)}
+        />
+        <TouchableOpacity style={styles.button} onPress={this.onButtonPress}>
+          {this.state.loading ? (
+            <ActivityIndicator size="large" color="#00ff00" />
+          ) : (
+            <Text style={styles.buttonText}>登录</Text>
+          )}
         </TouchableOpacity>
       </View>
     );
