@@ -28,12 +28,12 @@ export default class YooRouter extends Component {
     Animated.parallel([
       Animated.timing(this.state.splashX, {
         toValue: -width,
-        duration: 500,
+        duration: 250,
         useNativeDriver: false,
       }),
       Animated.timing(this.state.loginX, {
         toValue: 0,
-        duration: 500,
+        duration: 250,
         useNativeDriver: false,
       }),
     ]).start();
@@ -45,12 +45,12 @@ export default class YooRouter extends Component {
       Animated.parallel([
         Animated.timing(this.state.splashX, {
           toValue: -width,
-          duration: 500,
+          duration: 250,
           useNativeDriver: false,
         }),
         Animated.timing(this.state.forumX, {
           toValue: 0,
-          duration: 500,
+          duration: 250,
           useNativeDriver: false,
         }),
       ]).start();
@@ -58,12 +58,12 @@ export default class YooRouter extends Component {
       Animated.parallel([
         Animated.timing(this.state.loginX, {
           toValue: -width,
-          duration: 500,
+          duration: 250,
           useNativeDriver: false,
         }),
         Animated.timing(this.state.forumX, {
           toValue: 0,
-          duration: 500,
+          duration: 250,
           useNativeDriver: false,
         }),
       ]).start();

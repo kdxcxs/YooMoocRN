@@ -57,12 +57,12 @@ export default class YooForumUI extends Component {
           x: screenWidth,
           y: this.state.currentPosition - topicRef.state.layoutY + 8,
         },
-        duration: 500,
+        duration: 250,
         useNativeDriver: true,
       }),
       Animated.timing(this.state.translateX, {
         toValue: -screenWidth,
-        duration: 500,
+        duration: 250,
         useNativeDriver: true,
       }),
     ]).start();
@@ -76,12 +76,12 @@ export default class YooForumUI extends Component {
           x: 0,
           y: 0,
         },
-        duration: 500,
+        duration: 250,
         useNativeDriver: true,
       }),
       Animated.timing(this.state.translateX, {
         toValue: 0,
-        duration: 500,
+        duration: 250,
         useNativeDriver: true,
       }),
     ]).start();
