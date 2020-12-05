@@ -8,6 +8,8 @@ import {
   Text,
   ActivityIndicator,
   ToastAndroid,
+  Animated,
+  Keyboard,
 } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -45,15 +47,37 @@ const styles = StyleSheet.create({
     fontSize: 26,
   },
 });
+const AnimatedInput = Animated.createAnimatedComponent(TextInput);
+const AnimatedImage = Animated.createAnimatedComponent(Image);
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 export default class YooLoginUI extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
+      translateY: new Animated.Value(0),
     };
     this.onButtonPress = this.onButtonPress.bind(this);
     this.onLoginFailed = this.onLoginFailed.bind(this);
+    this.onKeyboardDidShow = this.onKeyboardDidShow.bind(this);
+    this.onKeyboardDidHide = this.onKeyboardDidHide.bind(this);
+  }
+
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this.onKeyboardDidShow,
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this.onKeyboardDidHide,
+    );
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
   }
 
   onButtonPress() {
@@ -68,31 +92,64 @@ export default class YooLoginUI extends Component {
     ToastAndroid.show(hint, ToastAndroid.SHORT);
   }
 
+  onKeyboardDidShow() {
+    Animated.timing(this.state.translateY, {
+      toValue: -320,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  }
+
+  onKeyboardDidHide() {
+    Animated.timing(this.state.translateY, {
+      toValue: 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Image source={require('../../assets/icon.png')} style={styles.logo} />
-        <TextInput
-          style={styles.input}
+        <AnimatedImage
+          source={require('../../assets/icon.png')}
+          style={[
+            styles.logo,
+            {transform: [{translateY: this.state.translateY}]},
+          ]}
+        />
+        <AnimatedInput
+          style={[
+            styles.input,
+            {transform: [{translateY: this.state.translateY}]},
+          ]}
           placeholder={'账号'}
           maxLength={10}
           value={this.props.username}
           onChangeText={(username) => this.props.setUsername(username)}
         />
-        <TextInput
-          style={styles.input}
+        <AnimatedInput
+          style={[
+            styles.input,
+            {transform: [{translateY: this.state.translateY}]},
+          ]}
           placeholder={'密码'}
           secureTextEntry={true}
           value={this.props.password}
           onChangeText={(password) => this.props.setPassword(password)}
         />
-        <TouchableOpacity style={styles.button} onPress={this.onButtonPress}>
+        <AnimatedTouchableOpacity
+          style={[
+            styles.button,
+            {transform: [{translateY: this.state.translateY}]},
+          ]}
+          onPress={this.onButtonPress}>
           {this.state.loading ? (
             <ActivityIndicator size="large" color="#00ff00" />
           ) : (
             <Text style={styles.buttonText}>登录</Text>
           )}
-        </TouchableOpacity>
+        </AnimatedTouchableOpacity>
       </View>
     );
   }
