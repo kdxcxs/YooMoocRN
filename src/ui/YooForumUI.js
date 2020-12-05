@@ -49,13 +49,13 @@ export default class YooForumUI extends Component {
     this.hideDetail = this.hideDetail.bind(this);
   }
 
-  showDetail(topicRef) {
+  showDetail(translate, layoutY, onAnimationFinished) {
     this.setState({scrollEnabled: false});
     Animated.parallel([
-      Animated.timing(topicRef.state.translate, {
+      Animated.timing(translate, {
         toValue: {
           x: screenWidth,
-          y: this.state.currentPosition - topicRef.state.layoutY + 8,
+          y: this.state.currentPosition - layoutY + 8,
         },
         duration: 250,
         useNativeDriver: true,
@@ -65,13 +65,13 @@ export default class YooForumUI extends Component {
         duration: 250,
         useNativeDriver: true,
       }),
-    ]).start();
+    ]).start(onAnimationFinished);
   }
 
-  hideDetail(topicRef) {
+  hideDetail(translate, onAnimationFinished) {
     this.setState({scrollEnabled: true});
     Animated.parallel([
-      Animated.timing(topicRef.state.translate, {
+      Animated.timing(translate, {
         toValue: {
           x: 0,
           y: 0,
@@ -84,7 +84,7 @@ export default class YooForumUI extends Component {
         duration: 250,
         useNativeDriver: true,
       }),
-    ]).start();
+    ]).start(onAnimationFinished);
   }
 
   render() {

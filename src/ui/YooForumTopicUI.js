@@ -36,15 +36,22 @@ export default class YooForumTopicUI extends Component {
     };
     this.topicHeaderRef = createRef();
     this.onPress = this.onPress.bind(this);
+    this.onAnimationFinished = this.onAnimationFinished.bind(this);
+  }
+
+  onAnimationFinished() {
+    this.setState({detailShowing: !this.state.detailShowing});
   }
 
   onPress() {
     if (!this.state.detailShowing) {
-      this.setState({detailShowing: true});
-      this.props.showDetail(this);
+      this.props.showDetail(
+        this.state.translate,
+        this.state.layoutY,
+        this.onAnimationFinished,
+      );
     } else {
-      this.setState({detailShowing: false});
-      this.props.hideDetail(this);
+      this.props.hideDetail(this.state.translate, this.onAnimationFinished);
     }
   }
 
