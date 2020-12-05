@@ -45,6 +45,17 @@ const styles = StyleSheet.create({
   },
 });
 
+function ForumTopic(props) {
+  return props.topics.map((topic, key) => (
+    <YooForumTopic
+      key={key}
+      topic={topic}
+      showDetail={props.showDetail}
+      hideDetail={props.hideDetail}
+    />
+  ));
+}
+
 export default class YooForumUI extends Component {
   constructor(props) {
     super(props);
@@ -134,14 +145,11 @@ export default class YooForumUI extends Component {
           this.setState({currentPosition: event.nativeEvent.contentOffset.y})
         }>
         {this.props.hint === '' ? (
-          this.props.topics.map((topic, key) => (
-            <YooForumTopic
-              key={key}
-              topic={topic}
-              showDetail={this.showDetail}
-              hideDetail={this.hideDetail}
-            />
-          ))
+          <ForumTopic
+            topics={this.props.topics}
+            showDetail={this.showDetail}
+            hideDetail={this.hideDetail}
+          />
         ) : (
           <View style={styles.hintContainer}>
             <Image
