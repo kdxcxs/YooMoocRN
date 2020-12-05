@@ -32,6 +32,7 @@ export default class YooForumTopicUI extends Component {
     this.state = {
       detailShowing: false,
       layoutY: 0,
+      layoutHeight: 0,
       translate: new Animated.ValueXY({x: 0, y: 0}),
     };
     this.topicHeaderRef = createRef();
@@ -50,6 +51,7 @@ export default class YooForumTopicUI extends Component {
         this.state.layoutY,
         this.onAnimationFinished,
         this.props.replies,
+        this.state.layoutHeight,
       );
     } else {
       this.props.hideDetail(this.state.translate, this.onAnimationFinished);
@@ -65,7 +67,10 @@ export default class YooForumTopicUI extends Component {
         ]}
         onPress={this.onPress}
         onLayout={(event) => {
-          this.setState({layoutY: event.nativeEvent.layout.y});
+          this.setState({
+            layoutY: event.nativeEvent.layout.y,
+            layoutHeight: event.nativeEvent.layout.height,
+          });
         }}>
         <View ref={this.topicHeaderRef}>
           <Text style={styles.owner}>{this.props.topic.owner}</Text>

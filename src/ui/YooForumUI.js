@@ -90,14 +90,14 @@ export default class YooForumUI extends Component {
     this.hideDetail = this.hideDetail.bind(this);
   }
 
-  showDetail(translate, layoutY, onAnimationFinished, replies) {
+  showDetail(translate, layoutY, onAnimationFinished, replies, layoutHeight) {
     this.replyRef.current.scrollTo({x: 0, y: 0, animated: false});
     this.setState({
       scrollEnabled: false,
       currentReplies: replies,
     });
     this.state.replyTranslateY.setValue(
-      this.state.currentPosition + 100 + screenHeight,
+      this.state.currentPosition + layoutHeight + screenHeight,
     );
     Animated.parallel([
       Animated.timing(translate, {
@@ -114,7 +114,7 @@ export default class YooForumUI extends Component {
         useNativeDriver: true,
       }),
       Animated.timing(this.state.replyTranslateY, {
-        toValue: this.state.currentPosition + 100,
+        toValue: this.state.currentPosition + layoutHeight + 8,
         duration: 250,
         delay: 250,
         useNativeDriver: true,
