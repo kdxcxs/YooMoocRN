@@ -46,15 +46,9 @@ export default class YooForumTopicUI extends Component {
 
   onPress() {
     if (!this.state.detailShowing) {
-      this.props.showDetail(
-        this.state.translate,
-        this.state.layoutY,
-        this.onAnimationFinished,
-        this.props.replies,
-        this.state.layoutHeight,
-      );
+      this.props.showDetail(this);
     } else {
-      this.props.hideDetail(this.state.translate, this.onAnimationFinished);
+      this.props.hideDetail();
     }
   }
 

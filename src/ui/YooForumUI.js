@@ -88,22 +88,29 @@ export default class YooForumUI extends Component {
     this.replyRef = createRef();
     this.showDetail = this.showDetail.bind(this);
     this.hideDetail = this.hideDetail.bind(this);
+    this.currentForumTopicUI = null;
   }
 
-  showDetail(translate, layoutY, onAnimationFinished, replies, layoutHeight) {
+  showDetail(ForumTopicUI) {
+    this.currentForumTopicUI = ForumTopicUI;
     this.replyRef.current.scrollTo({x: 0, y: 0, animated: false});
     this.setState({
       scrollEnabled: false,
-      currentReplies: replies,
+      currentReplies: this.currentForumTopicUI.props.replies,
     });
     this.state.replyTranslateY.setValue(
-      this.state.currentPosition + layoutHeight + screenHeight,
+      this.state.currentPosition +
+        this.currentForumTopicUI.state.layoutHeight +
+        screenHeight,
     );
     Animated.parallel([
-      Animated.timing(translate, {
+      Animated.timing(this.currentForumTopicUI.state.translate, {
         toValue: {
           x: screenWidth,
-          y: this.state.currentPosition - layoutY + 8,
+          y:
+            this.state.currentPosition -
+            this.currentForumTopicUI.state.layoutY +
+            8,
         },
         duration: 250,
         useNativeDriver: true,
@@ -114,18 +121,21 @@ export default class YooForumUI extends Component {
         useNativeDriver: true,
       }),
       Animated.timing(this.state.replyTranslateY, {
-        toValue: this.state.currentPosition + layoutHeight + 8,
+        toValue:
+          this.state.currentPosition +
+          this.currentForumTopicUI.state.layoutHeight +
+          8,
         duration: 250,
         delay: 250,
         useNativeDriver: true,
       }),
-    ]).start(onAnimationFinished);
+    ]).start(this.currentForumTopicUI.onAnimationFinished);
   }
 
-  hideDetail(translate, onAnimationFinished) {
+  hideDetail() {
     this.setState({scrollEnabled: true});
     Animated.parallel([
-      Animated.timing(translate, {
+      Animated.timing(this.currentForumTopicUI.state.translate, {
         toValue: {
           x: 0,
           y: 0,
@@ -143,7 +153,12 @@ export default class YooForumUI extends Component {
         duration: 250,
         useNativeDriver: true,
       }),
-    ]).start(onAnimationFinished);
+    ]).start(
+      function () {
+        this.currentForumTopicUI.onAnimationFinished();
+        this.currentForumTopicUI = null;
+      }.bind(this),
+    );
   }
 
   render() {
