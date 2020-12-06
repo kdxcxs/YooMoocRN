@@ -9,6 +9,7 @@ import {
   Animated,
   Dimensions,
   Pressable,
+  BackHandler,
 } from 'react-native';
 import YooForumTopic from '../component/YooForumTopic';
 import YooReply from './YooReply';
@@ -88,7 +89,22 @@ export default class YooForumUI extends Component {
     this.replyRef = createRef();
     this.showDetail = this.showDetail.bind(this);
     this.hideDetail = this.hideDetail.bind(this);
+    this.handleAndroidBack = this.handleAndroidBack.bind(this);
     this.currentForumTopicUI = null;
+  }
+
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleAndroidBack,
+    );
+  }
+
+  handleAndroidBack() {
+    if (this.currentForumTopicUI){
+      this.hideDetail();
+      return true;
+    }
   }
 
   showDetail(ForumTopicUI) {
