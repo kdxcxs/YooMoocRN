@@ -10,6 +10,7 @@ import {
   Dimensions,
   Pressable,
   BackHandler,
+  ToastAndroid,
 } from 'react-native';
 import YooForumTopic from '../component/YooForumTopic';
 import YooReply from './YooReply';
@@ -85,6 +86,7 @@ export default class YooForumUI extends Component {
       translateX: new Animated.Value(0),
       currentReplies: [],
       replyTranslateY: new Animated.Value(0),
+      lastPressingBack: 0,
     };
     this.replyRef = createRef();
     this.showDetail = this.showDetail.bind(this);
@@ -101,8 +103,14 @@ export default class YooForumUI extends Component {
   }
 
   handleAndroidBack() {
-    if (this.currentForumTopicUI){
+    if (this.currentForumTopicUI) {
       this.hideDetail();
+      return true;
+    } else if (new Date().getTime() - this.state.lastPressingBack <= 1000) {
+      BackHandler.exitApp();
+    } else {
+      this.setState({lastPressingBack: new Date().getTime()});
+      ToastAndroid.show('再按一次以退出Yoomooc', ToastAndroid.SHORT);
       return true;
     }
   }
