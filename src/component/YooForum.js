@@ -14,6 +14,8 @@ export default class YooForum extends Component {
     this.state = {
       hint: '准备中',
       topics: [],
+      fetchedListPage: 0,
+      gettingTopicList: false,
     };
     this.initForum = this.initForum.bind(this);
     this.getTopicList = this.getTopicList.bind(this);
@@ -87,9 +89,7 @@ export default class YooForum extends Component {
                       'http://eol.ctbu.edu.cn/meol/jpk/course/layout/newpage/index.jsp?courseId=46445',
                   },
                 )
-                  .then(() => {
-                    this.getTopicList();
-                  })
+                  .then(this.getTopicList)
                   .catch(ShowErrorToast);
               })
               .catch(ShowErrorToast);
@@ -101,8 +101,10 @@ export default class YooForum extends Component {
       .catch(ShowErrorToast);
   }
 
-  getTopicList(page = 1) {
-    this.setState({hint: '获取数据中'});
+  getTopicList() {
+    const page = this.state.fetchedListPage + 1;
+    page === 1 && this.setState({hint: '获取数据中'});
+    this.setState({gettingTopicList: true});
     gbkFetch(
       'GET',
       `http://eol.ctbu.edu.cn/meol/common/faq/forum.jsp?viewtype=thread&forumid=102211&cateId=0&s_gotopage=${page}`,
@@ -128,11 +130,23 @@ export default class YooForum extends Component {
           current.next().text(),
         );
       });
-      this.setState({topics: [...this.state.topics, ...newTopics], hint: ''});
+      this.setState({
+        topics: [...this.state.topics, ...newTopics],
+        hint: '',
+        fetchedListPage: page,
+        gettingTopicList: false,
+      });
     });
   }
 
   render() {
-    return <YooForumUI topics={this.state.topics} hint={this.state.hint} />;
+    return (
+      <YooForumUI
+        topics={this.state.topics}
+        hint={this.state.hint}
+        getTopicList={this.getTopicList}
+        gettingTopicList={this.state.gettingTopicList}
+      />
+    );
   }
 }

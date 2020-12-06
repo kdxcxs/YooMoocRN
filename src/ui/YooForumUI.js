@@ -8,6 +8,9 @@ import {
   Image,
   Animated,
   Dimensions,
+  Pressable,
+  BackHandler,
+  ToastAndroid,
 } from 'react-native';
 import YooForumTopic from '../component/YooForumTopic';
 import YooReply from './YooReply';
@@ -43,7 +46,36 @@ const styles = StyleSheet.create({
   indicator: {
     marginTop: 64,
   },
+  showMoreText: {
+    fontSize: 18,
+    margin: 8,
+  },
 });
+
+function ForumTopic(props) {
+  return props.topics.map((topic, key) => (
+    <YooForumTopic
+      key={key}
+      topic={topic}
+      showDetail={props.showDetail}
+      hideDetail={props.hideDetail}
+    />
+  ));
+}
+
+function ShowMore(props) {
+  return (
+    <Pressable
+      style={{width: screenWidth, alignItems: 'center'}}
+      onPress={() => props.getTopicList()}>
+      {props.gettingTopicList ? (
+        <Text style={styles.showMoreText}>加载中</Text>
+      ) : (
+        <Text style={styles.showMoreText}>加载更多</Text>
+      )}
+    </Pressable>
+  );
+}
 
 export default class YooForumUI extends Component {
   constructor(props) {
@@ -54,26 +86,55 @@ export default class YooForumUI extends Component {
       translateX: new Animated.Value(0),
       currentReplies: [],
       replyTranslateY: new Animated.Value(0),
+      lastPressingBack: 0,
     };
     this.replyRef = createRef();
     this.showDetail = this.showDetail.bind(this);
     this.hideDetail = this.hideDetail.bind(this);
+    this.handleAndroidBack = this.handleAndroidBack.bind(this);
+    this.currentForumTopicUI = null;
   }
 
-  showDetail(translate, layoutY, onAnimationFinished, replies) {
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleAndroidBack,
+    );
+  }
+
+  handleAndroidBack() {
+    if (this.currentForumTopicUI) {
+      this.hideDetail();
+      return true;
+    } else if (new Date().getTime() - this.state.lastPressingBack <= 1000) {
+      BackHandler.exitApp();
+    } else {
+      this.setState({lastPressingBack: new Date().getTime()});
+      ToastAndroid.show('再按一次以退出Yoomooc', ToastAndroid.SHORT);
+      return true;
+    }
+  }
+
+  showDetail(ForumTopicUI) {
+    this.currentForumTopicUI = ForumTopicUI;
     this.replyRef.current.scrollTo({x: 0, y: 0, animated: false});
     this.setState({
       scrollEnabled: false,
-      currentReplies: replies,
+      currentReplies: this.currentForumTopicUI.props.replies,
     });
     this.state.replyTranslateY.setValue(
-      this.state.currentPosition + 100 + screenHeight,
+      this.state.currentPosition +
+        this.currentForumTopicUI.state.layoutHeight +
+        screenHeight,
     );
     Animated.parallel([
-      Animated.timing(translate, {
+      Animated.timing(this.currentForumTopicUI.state.translate, {
         toValue: {
           x: screenWidth,
-          y: this.state.currentPosition - layoutY + 8,
+          y:
+            this.state.currentPosition -
+            this.currentForumTopicUI.state.layoutY +
+            8,
         },
         duration: 250,
         useNativeDriver: true,
@@ -84,18 +145,21 @@ export default class YooForumUI extends Component {
         useNativeDriver: true,
       }),
       Animated.timing(this.state.replyTranslateY, {
-        toValue: this.state.currentPosition + 100,
+        toValue:
+          this.state.currentPosition +
+          this.currentForumTopicUI.state.layoutHeight +
+          8,
         duration: 250,
         delay: 250,
         useNativeDriver: true,
       }),
-    ]).start(onAnimationFinished);
+    ]).start(this.currentForumTopicUI.onAnimationFinished);
   }
 
-  hideDetail(translate, onAnimationFinished) {
+  hideDetail() {
     this.setState({scrollEnabled: true});
     Animated.parallel([
-      Animated.timing(translate, {
+      Animated.timing(this.currentForumTopicUI.state.translate, {
         toValue: {
           x: 0,
           y: 0,
@@ -113,7 +177,12 @@ export default class YooForumUI extends Component {
         duration: 250,
         useNativeDriver: true,
       }),
-    ]).start(onAnimationFinished);
+    ]).start(
+      function () {
+        this.currentForumTopicUI.onAnimationFinished();
+        this.currentForumTopicUI = null;
+      }.bind(this),
+    );
   }
 
   render() {
@@ -134,14 +203,17 @@ export default class YooForumUI extends Component {
           this.setState({currentPosition: event.nativeEvent.contentOffset.y})
         }>
         {this.props.hint === '' ? (
-          this.props.topics.map((topic, key) => (
-            <YooForumTopic
-              key={key}
-              topic={topic}
+          <View>
+            <ForumTopic
+              topics={this.props.topics}
               showDetail={this.showDetail}
               hideDetail={this.hideDetail}
             />
-          ))
+            <ShowMore
+              getTopicList={this.props.getTopicList}
+              gettingTopicList={this.props.gettingTopicList}
+            />
+          </View>
         ) : (
           <View style={styles.hintContainer}>
             <Image
